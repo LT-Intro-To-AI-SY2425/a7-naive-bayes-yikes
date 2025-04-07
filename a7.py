@@ -111,48 +111,41 @@ class BayesClassifier:
         # are self.pos_filename and self.neg_filename
 
     def classify(self, text: str) -> str:
-        """Classifies given text as positive, negative or neutral from calculating the
-        most likely document class to which the target string belongs
-
-        Args:
-            text - text to classify
-
-        Returns:
-            classification, either positive, negative or neutral
-        """
-        # TODO: fill me out
-
+        """Classifies given text as positive or negative."""
         
-        # get a list of the individual tokens that occur in text
+        # Tokenize the input text
+        tokens = self.tokenize(text)
         
-
-        # create some variables to store the positive and negative probability. since
-        # we will be adding logs of probabilities, the initial values for the positive
-        # and negative probabilities are set to 0
+        # Initialize variables to store the log-probabilities for positive and negative classes
+        pos_log_prob = 0
+        neg_log_prob = 0
         
-
-        # get the sum of all of the frequencies of the features in each document class
-        # (i.e. how many words occurred in all documents for the given class) - this
-        # will be used in calculating the probability of each document class given each
-        # individual feature
+        # Get the sum of all word frequencies in both classes for normalization
+        pos_denominator = sum(self.pos_freqs.values())
+        neg_denominator = sum(self.neg_freqs.values())
         
-
-        # for each token in the text, calculate the probability of it occurring in a
-        # postive document and in a negative document and add the logs of those to the
-        # running sums. when calculating the probabilities, always add 1 to the numerator
-        # of each probability for add one smoothing (so that we never have a probability
-        # of 0)
-
-
-        # for debugging purposes, it may help to print the overall positive and negative
-        # probabilities
+        # Add smoothing factor (the vocabulary size plus one)
+        vocab_size = len(set(self.pos_freqs.keys()).union(set(self.neg_freqs.keys())))
         
-
-        # determine whether positive or negative was more probable (i.e. which one was
-        # larger)
+        # Calculate log(P(class | words)) using sum of logs of P(word | class)
+        for token in tokens:
+            # For positive class
+            pos_word_prob = (self.pos_freqs.get(token, 0) + 1) / (pos_denominator + vocab_size)
+            pos_log_prob += math.log(pos_word_prob)
+            
+            # For negative class
+            neg_word_prob = (self.neg_freqs.get(token, 0) + 1) / (neg_denominator + vocab_size)
+            neg_log_prob += math.log(neg_word_prob)
         
-
-        # return a string of "positive" or "negative"
+        # Print logs for debugging
+        # print(f"Pos log prob: {pos_log_prob}")
+        # print(f"Neg log prob: {neg_log_prob}")
+        
+        # Compare log-probabilities and return the classification
+        if pos_log_prob > neg_log_prob:
+            return "positive"
+        else:
+            return "negative"
 
     def load_file(self, filepath: str) -> str:
         """Loads text of given file
@@ -288,10 +281,10 @@ if __name__ == "__main__":
     print(f"P('terrible'| neg) {(b.neg_freqs['terrible']+1)/neg_denominator}")
 
     # # uncomment the below lines once you've implemented `classify`
-    # print("\nThe following should all be positive.")
-    # print(b.classify('I love computer science'))
-    # print(b.classify('this movie is fantastic'))
-    # print("\nThe following should all be negative.")
-    # print(b.classify('rainy days are the worst'))
-    # print(b.classify('computer science is terrible'))
+    print("\nThe following should all be positive.")
+    print(b.classify('I love computer science'))
+    print(b.classify('this movie is fantastic'))
+    print("\nThe following should all be negative.")
+    print(b.classify('rainy days are the worst'))
+    print(b.classify('computer science is terrible'))
     pass
