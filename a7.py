@@ -1,7 +1,7 @@
 import math, os, pickle, re
 from typing import Tuple, List, Dict
 
-
+# NOAH DONS AND MARCUS TOVAR
 class BayesClassifier:
     """A simple BayesClassifier implementation
 
@@ -138,8 +138,8 @@ class BayesClassifier:
             neg_log_prob += math.log(neg_word_prob)
         
         # Print logs for debugging
-        # print(f"Pos log prob: {pos_log_prob}")
-        # print(f"Neg log prob: {neg_log_prob}")
+        print(f"Pos log prob: {pos_log_prob}")
+        print(f"Neg log prob: {neg_log_prob}")
         
         # Compare log-probabilities and return the classification
         if pos_log_prob > neg_log_prob:
@@ -281,10 +281,8 @@ if __name__ == "__main__":
     print(f"P('terrible'| neg) {(b.neg_freqs['terrible']+1)/neg_denominator}")
 
     # # uncomment the below lines once you've implemented `classify`
-    print("\nThe following should all be positive.")
-    print(b.classify('I love computer science'))
-    print(b.classify('this movie is fantastic'))
-    print("\nThe following should all be negative.")
-    print(b.classify('rainy days are the worst'))
-    print(b.classify('computer science is terrible'))
+    print("Tests")
+    print(b.classify("I am nervous that I won't do well on the AP tests.  I have studied, but I don't think I'll do that well"))
+    print(b.classify("Unfortunately my pet died a few days ago and im feeling really bummed out"))
+    print(b.classify("I don't think chicken fingers taste very good without sauce"))
     pass
